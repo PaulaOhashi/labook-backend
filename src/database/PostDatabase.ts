@@ -50,4 +50,43 @@ export class PostDatabase extends BaseDatabase {
             .delete()
             .where({id})
     }
+
+        public incrementLike = async (id: string): Promise<void> => {
+            await BaseDatabase.connection(PostDatabase.TABLE_POSTS)
+                .where({ id })
+                .increment('likes')
+        }
+    
+        public decrementLike = async (id: string): Promise<void> => {
+            await BaseDatabase.connection(PostDatabase.TABLE_POSTS)
+                .where({ id })
+                .decrement('likes')
+        }
+    
+        public incrementDislike = async (id: string): Promise<void> => {
+            await BaseDatabase.connection(PostDatabase.TABLE_POSTS)
+                .where({ id })
+                .increment('dislikes')
+        }
+    
+        public decrementDislike = async (id: string): Promise<void> => {
+            await BaseDatabase.connection(PostDatabase.TABLE_POSTS)
+                .where({ id })
+                .decrement('dislikes')
+        }
+    
+        public reverseLikeUp = async (postId: string): Promise<void> => {
+            await BaseDatabase.connection(PostDatabase.TABLE_POSTS)
+                .increment('likes')
+                .decrement('dislikes')
+                .where({ id: postId })
+        }
+    
+        public reverseDislikeUp = async (postId: string): Promise<void> => {
+            await BaseDatabase.connection(PostDatabase.TABLE_POSTS)
+                .increment('dislikes')
+                .decrement('likes')
+                .where({ id: postId })        
+        }
+    
 }

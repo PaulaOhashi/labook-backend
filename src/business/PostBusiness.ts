@@ -5,9 +5,10 @@ import { CreatePostInputDTO, CreatePostOutputDTO } from "../dtos/post/createPost
 import { DeletePostInputDTO } from "../dtos/post/deletePost.dto"
 import { EditPostInputDTO, EditPostOutputDTO } from "../dtos/post/editPost.dto"
 import { GetPostsInputDTO, GetPostsOutputDTO } from "../dtos/post/getPost.dto"
+import { LikeDislikePostInputDTO } from "../dtos/post/likeOrDislikePost.dto"
 import { BadRequestError } from "../errors/BadRequestError"
 import { NotFoundError } from "../errors/NotFoundError"
-import { Post, PostDB } from "../models/Post"
+import { LikeDislikeDB, Post, PostDB } from "../models/Post"
 import { USER_ROLES } from "../models/User"
 import { HashManager } from "../services/HashManager"
 import { IdGenerator } from "../services/IdGenerator"
@@ -149,6 +150,56 @@ export class PostBusiness {
 
     }
 
+    public likeOrDislikePost = async (input: LikeDislikePostInputDTO) => {
+        const { id, token, like } = input
+
+        const payload = this.tokenManager.getPayload(token)
+
+        if (!payload) {
+            throw new BadRequestError("Token inválido")
+        }
+
+        const postDB: PostDB | undefined = await this.postDatabase.findPostById(id)
+        if (!postDB) {
+            throw new NotFoundError("Id não encontrado");
+        }
+
+        const { creator_id } = postDB
+        const { id: user_id } = payload
+        if (creator_id === user_id) {
+            throw new BadRequestError("O criador da postagem não pode fazer esta ação!");
+        }
+
+        const likePost: number = Number(like)
+
+        const like_dislike: LikeDislikeDB = {
+            user_id,
+            post_id: id,
+            like: likePost
+        }
+
+        const likesDislikesExists: LikeDislikeDB | undefined = await this.likeDislikeDatabase.findLikesDislikes(id, payload.id)
+
+        if (!likesDislikesExists) {
+            await this.likeDislikeDatabase.createLikesDislikes(like_dislike)
+
+            likePost === 1 ?
+                await this.postDatabase.incrementLike(id) :
+                await this.postDatabase.incrementDislike(id)
+
+        } else {
+            if (likesDislikesExists.like === likePost) {
+                await this.likeDislikeDatabase.deleteLikesDislikes(user_id, id)
+                likePost === 1 ?
+                    await this.postDatabase.decrementLike(id) : await this.postDatabase.decrementDislike(id)
+            } else {
+                await this.likeDislikeDatabase.updateLikesDislikes(like_dislike)
+                likePost === 1 ?
+                    await this.postDatabase.reverseLikeUp(id) :
+                    await this.postDatabase.reverseDislikeUp(id)
+            }
+        }
 
 
+    }
 }
