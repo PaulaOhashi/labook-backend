@@ -2,7 +2,7 @@
 
 # Sobre o Projeto
 
-Projeto de back-end do curso de desenvolvedor web full stack da Labenu. Trata-se uma rede social que tem por objetivo promover a conexão e a interação entre as pessoas. É possível realizar o cadastro, fazer o login, criar postagens e curtir e descurtir publicações.  
+Projeto de back-end do curso de desenvolvedor web full stack da Labenu. Trata-se de uma API de uma rede social que tem por objetivo promover a conexão e a interação entre as pessoas. É possível realizar o cadastro de novos usuários, fazer o login, criar e deletar postagens e curtir e descurtir publicações.  
 
 ## Conteúdos abordados
 
@@ -103,7 +103,7 @@ Retorna Status code 200 ok
 ```
 
 ## Link para a coleção de requisições no Postman
-
+https://documenter.getpostman.com/view/26594526/2s9Y5ZuM5U
 
 ## Autores
 [<img src="https://github.com/PaulaOhashi/labecommerce-backend/assets/107084846/d9ecbcb0-07da-44e1-a511-60f604e9d1bb" width=115><br><sub>Paula Iumi Ohashi</sub>](https://github.com/PaulaOhashi)
