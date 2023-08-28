@@ -39,3 +39,5 @@ VALUES
 DROP TABLE users;
 
 DROP TABLE posts;
+
+DROP TABLE likes_dislikes;
